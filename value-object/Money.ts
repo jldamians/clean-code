@@ -32,6 +32,14 @@ class Money {
     return new Money(this.amount + amount, this.currency);
   }
 
+  public addMoney(money: Money) {
+    if (this.currency !== money.currency) {
+      throw new Error(`El tipo de moneda es diferente`);
+    }
+
+    return new Money(this.amount + money.amount, this.currency)
+  }
+
   public equals(money: Money): boolean {
     if (this.currency !== money.currency) {
       return false;
