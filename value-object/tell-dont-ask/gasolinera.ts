@@ -1,5 +1,15 @@
 // ref: https://medium.com/@mnavarrocarter/enriqueciendo-tus-modelos-7b3c184832c5
 
+class Mechanic {
+  private _name: string;
+  constructor(name: string) {
+    this._name = name;
+  }
+  get name() {
+    return this._name;
+  }
+}
+
 class Car {
   private tank!: Tank;
 
@@ -7,9 +17,16 @@ class Car {
     this.tank = tank;
   }
 
-  public fillTank(fillingOrder: FillingOrder): FillingOrder {
-    fillingOrder.fill(this.tank);
-    return fillingOrder;
+  public fillTank(order: FillingOrder): void {
+    order.fill(this.tank);
+  }
+
+  public changeTank(order: ChangeTankOrder, mechanic: Mechanic): void {
+    this.tank = order.fetchTank(mechanic);
+  }
+
+  public getTackCapacity(): number {
+    return this.tank.getMaxCapacity();
   }
 }
 
@@ -48,6 +65,10 @@ class Tank {
 
     // no hay excedente puesto que no se supera la capacidad del tanque
     return 0;
+  }
+
+  public getMaxCapacity(): number {
+    return this.maxCapacity;
   }
 
   public isFull(): boolean {
@@ -92,6 +113,20 @@ class FillingOrder {
   }
 }
 
+class ChangeTankOrder {
+  // tanque nuevo
+  private tank: Tank;
+  private executeBy!: Mechanic;
+  constructor(tank: Tank) {
+    this.tank = tank;
+  }
+
+  public fetchTank(mechanic: Mechanic): Tank {
+    this.executeBy = mechanic;
+    return this.tank;
+  }
+}
+
 const myMustangShelbyTank = new Tank(60, 10);
 const myMustangShelby = new Car(myMustangShelbyTank);
 const myMustangShelbyOrder = FillingOrder.full();
@@ -117,3 +152,11 @@ const myDodgeChargerOrder03 = FillingOrder.liter(30);
 myDodgeCharger.fillTank(myDodgeChargerOrder03);
 console.log(`Dodge Orden 3, excedente: ${myDodgeChargerOrder03.getLitersLeft()} lts`);
 // Dodge Orden 3, excedente: 20
+
+const myFerrariOldTank = new Tank(50, 0);
+const myFerrariNewTank = new Tank(60, 0);
+const myFerrariChangeTankOrder = new ChangeTankOrder(myFerrariNewTank);
+const myFerrari = new Car(myFerrariOldTank);
+console.log(`Tanque ${myFerrari.getTackCapacity()} lts`);
+myFerrari.changeTank(myFerrariChangeTankOrder, new Mechanic('JL'));
+console.log(`Tanque ${myFerrari.getTackCapacity()} lts`);
