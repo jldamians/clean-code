@@ -28,7 +28,11 @@ class CurrencySE {
     this._isoCode = isoCode;
   }
 
-  toString() {
+  public equals(currency: CurrencySE): boolean {
+    return this.isoCode === currency.isoCode;
+  }
+
+  public toString(): string {
     return this.isoCode;
   }
 }
