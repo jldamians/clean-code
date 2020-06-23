@@ -1,12 +1,11 @@
 enum Currencies {
   USD = 'USD',
   PEN = 'PEN',
-  EUR = 'EUR',
 }
 
 class Money {
-  private amount: number;
-  private currency: Currencies;
+  private _amount: number;
+  private _currency: Currencies;
 
   public static usd(amount: number) {
     return new this(amount, Currencies.USD);
@@ -16,16 +15,24 @@ class Money {
     return new this(amount, Currencies.PEN);
   }
 
-  public static eur(amount: number) {
-    return new this(amount, Currencies.EUR);
-  }
-
   constructor(amount: number, currency: Currencies) {
-    this.amount = amount;
-    this.currency = currency;
+    this._amount = amount;
+    this._currency = currency;
   }
 
-  public equals(money: Money) {
+  public get amount(): number {
+    return this._amount;
+  }
+
+  public get currency(): Currencies {
+    return this._currency;
+  }
+
+  public addAmount(amount: number): Money {
+    return new Money(this.amount + amount, this.currency);
+  }
+
+  public equals(money: Money): boolean {
     if (this.currency !== money.currency) {
       return false;
     }
@@ -39,3 +46,7 @@ const money2 = Money.pen(150);
 const money3 = Money.usd(150);
 console.log(money1.equals(money2));
 console.log(money1.equals(money3));
+
+const money = new Money(15, Currencies.USD);
+const newMoney = money.addAmount(15);
+console.log(`${newMoney.currency} ${newMoney.amount}`);
